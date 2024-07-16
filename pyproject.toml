@@ -8,6 +8,8 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.12"
 django = "^5.0.7"
+celery = "^5.4.0"
+redis = "^5.0.7"
 
 
 [build-system]
