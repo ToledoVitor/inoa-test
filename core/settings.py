@@ -21,6 +21,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 3rd party
+    "django_celery_beat",
+    "rest_framework",
+    # apps
     "b3"
 ]
 
@@ -106,5 +110,5 @@ STATIC_URL = '/static/'
 
 
 # Celery Config
-CELERY_BROKER_URL = "redis://localhost:6379"
-CELERY_RESULT_BACKEND = "redis://localhost:6379"
+CELERY_BROKER_URL = "sqla+sqlite:///celery.sqlite"
+CELERY_RESULT_BACKEND = "db+sqlite:///celery.sqlite"

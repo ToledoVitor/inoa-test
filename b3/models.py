@@ -1,5 +1,7 @@
+from datetime import timezone
+
 from django.db import models
-from datetime import timedelta, timezone
+from django_celery_beat.models import PeriodicTask
 
 
 class BaseSuperManager(models.Manager):
@@ -42,7 +44,7 @@ class Stock(BaseSuperModel):
         verbose_name_plural = "Ativos"
     
 
-class SearchConfig(BaseSuperModel):
+class Search(BaseSuperModel):
     stocks = models.ManyToManyField(
         Stock,
         null=True,
@@ -52,14 +54,34 @@ class SearchConfig(BaseSuperModel):
     )
     all_stocks = models.BooleanField(verbose_name="Todos os ativos", default=False)
 
-    interval = models.DurationField(
+    interval = models.IntegerField(
         verbose_name="Intervalo entre buscas (minutos)",
-        default=timedelta(minutes=5),
+        default=5,
+    )
+
+    task = models.OneToOneField(
+        PeriodicTask, null=True, blank=True, on_delete=models.SET_NULL
     )
 
     class Meta:
         verbose_name = "Configuração de Busca"
         verbose_name_plural = "Configurações de Buscas"
+
+
+class SearchRequest(models.Model):
+    response_time = models.IntegerField(
+        verbose_name="Tempo da resposta",
+        blank=False,
+    )
+    response_status = models.IntegerField(
+        verbose_name="Status da resposta",
+        blank=False,
+    )
+    search = models.ForeignKey(Search, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = "Resposta da Busca"
+        verbose_name_plural = "Respostas das Buscas"
 
 
 class StockPrice(BaseSuperModel):
@@ -70,7 +92,7 @@ class StockPrice(BaseSuperModel):
         on_delete=models.CASCADE,
     )
     search = models.ForeignKey(
-        SearchConfig,
+        Search,
         related_name="prices",
         verbose_name="Configuração de Busca",
         on_delete=models.CASCADE,
