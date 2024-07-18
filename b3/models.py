@@ -45,6 +45,18 @@ class Stock(BaseSuperModel):
     
 
 class Search(BaseSuperModel):
+    PRICE_TUNNEL_CHOICES = {
+        "LAST_TRADED_PRICE": "LAST_TRADED_PRICE",
+        "C-LAST": "C-LAST",
+        "MOST_RECENT": "MOST_RECENT", 
+    }
+    price_tunnel = models.CharField(
+        verbose_name="Túnel de Preço",
+        max_length=20,
+        choices=PRICE_TUNNEL_CHOICES,
+        default="LAST_TRADED_PRICE",
+    )
+
     stocks = models.ManyToManyField(
         Stock,
         null=True,
