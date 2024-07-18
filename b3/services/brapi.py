@@ -2,7 +2,7 @@ import requests
 import logging
 import json
 
-from b3.models import Search, StockPrice, Stock
+from b3.models import Search, StockPrice
 
 
 class BRAPIService:
@@ -10,33 +10,17 @@ class BRAPIService:
     token = "gGZMMDMBqzLjmUCMVHGqUV"
 
     def handle(self, search: Search):
-        results = self.__get_api_results(search=search)
+        api_results = self.__get_api_results(search=search)
 
         stock_prices = []
-        for result in results:
-            stock = Stock.objects.get(code=result["symbol"])
+        for data in api_results:
 
-            match search.price_tunnel:
-                case search.LAST_TRADED_PRICE:
-                    stock_prices.append(StockPrice(
-                        search=search,
-                        stock=stock,
-                        price=result["regularMarketPrice"],
-                    ))
-
-                case search.C_LAST:
-                   stock_prices.append(StockPrice(
-                        search=search,
-                        stock=stock,
-                        price=result["regularMarketPrice"],
-                    ))
-
-                case search.MOST_RECENT:
-                   stock_prices.append(StockPrice(
-                        search=search,
-                        stock=stock,
-                        price=result["regularMarketPrice"],
-                    ))
+            price = self.__get_price(tunnel=search.price_tunnel, stock=data["result"])
+            stock_prices.append(StockPrice(
+                search=search,
+                stock_id=data["stock_id"],
+                price=price,
+            ))
 
         StockPrice.objects.bulk_create(stock_prices, batch_size=100)
 
@@ -56,10 +40,25 @@ class BRAPIService:
                 )
                 response.raise_for_status()
                 stock_results.append(
-                    response.json()["results"][0]
+                    {
+                        "stock_id": stock.id,
+                        "result": response.json()["results"][0],
+                    }
                 )
 
             except:
                 logging.error(json.loads(response.content))
 
         return stock_results
+
+
+    def __get_price(self, tunnel: str, stock: dict) -> float:
+        match tunnel:
+            case Search.SUPERIOR:
+                return stock["regularMarketDayHigh"]
+
+            case Search.NEGOCIOS:
+                return stock["regularMarketPrice"]
+
+            case Search.INFERIOR:
+                return stock["regularMarketDayLow"]

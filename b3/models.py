@@ -48,14 +48,14 @@ class Stock(BaseSuperModel):
     
 
 class Search(BaseSuperModel):
-    LAST_TRADED_PRICE = "LAST_TRADED_PRICE"
-    C_LAST = "C-LAST"
-    MOST_RECENT = "MOST_RECENT" 
+    SUPERIOR = "SUPERIOR"
+    NEGOCIOS = "NEGOCIOS"
+    INFERIOR = "INFERIOR" 
 
     PRICE_TUNNEL_CHOICES = {
-        LAST_TRADED_PRICE: "LAST_TRADED_PRICE",
-        C_LAST: "C-LAST",
-        MOST_RECENT: "MOST_RECENT", 
+        SUPERIOR: "SUPERIOR",
+        NEGOCIOS: "NEGOCIOS",
+        INFERIOR: "INFERIOR", 
     }
     price_tunnel = models.CharField(
         verbose_name="Túnel de Preço",
@@ -106,6 +106,9 @@ class StockPrice(BaseSuperModel):
         max_digits=6,
         decimal_places=2,
     )
+
+    def __str__(self):
+        return f"{self.stock.code} - {self.price}"
 
     class Meta:
         verbose_name = "Preço do Ativo"

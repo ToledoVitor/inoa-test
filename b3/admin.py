@@ -1,3 +1,19 @@
 from django.contrib import admin
 
-# Register your models here.
+from b3.models import Stock, StockPrice, Search
+
+
+
+@admin.register(Stock)
+class StockAdmin(admin.ModelAdmin):
+    readonly_fields = ["code"]
+
+
+@admin.register(StockPrice)
+class StockPriceAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Search)
+class SearchAdmin(admin.ModelAdmin):
+    pass
