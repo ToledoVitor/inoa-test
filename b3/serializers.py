@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from b3.models import Search, SearchRequest
+from b3.models import Search
 
 
 class Searcherializer(serializers.ModelSerializer):
@@ -9,17 +9,7 @@ class Searcherializer(serializers.ModelSerializer):
         fields = (
             "id",
             "stocks",
-            "all_stocks",
+            "price_tunnel",
             "interval",
             "created_at",
-        )
-
-
-class SearchRequestSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SearchRequest
-        fields = (
-            "id",
-            "response_time",
-            "response_status",
         )

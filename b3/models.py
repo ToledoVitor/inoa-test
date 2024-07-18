@@ -39,16 +39,23 @@ class BaseSuperModel(models.Model):
 class Stock(BaseSuperModel):
     code = models.CharField(verbose_name="Código do ativo", max_length=10, unique=True)
 
+    def __str__(self) -> str:
+        return self.code
+
     class Meta:
         verbose_name = "Ativo"
         verbose_name_plural = "Ativos"
     
 
 class Search(BaseSuperModel):
+    LAST_TRADED_PRICE = "LAST_TRADED_PRICE"
+    C_LAST = "C-LAST"
+    MOST_RECENT = "MOST_RECENT" 
+
     PRICE_TUNNEL_CHOICES = {
-        "LAST_TRADED_PRICE": "LAST_TRADED_PRICE",
-        "C-LAST": "C-LAST",
-        "MOST_RECENT": "MOST_RECENT", 
+        LAST_TRADED_PRICE: "LAST_TRADED_PRICE",
+        C_LAST: "C-LAST",
+        MOST_RECENT: "MOST_RECENT", 
     }
     price_tunnel = models.CharField(
         verbose_name="Túnel de Preço",
@@ -59,12 +66,10 @@ class Search(BaseSuperModel):
 
     stocks = models.ManyToManyField(
         Stock,
-        null=True,
         blank=True,
         related_name="buscas",
         verbose_name="Ativos Monitorados"
     )
-    all_stocks = models.BooleanField(verbose_name="Todos os ativos", default=False)
 
     interval = models.IntegerField(
         verbose_name="Intervalo entre buscas (minutos)",
@@ -75,25 +80,12 @@ class Search(BaseSuperModel):
         PeriodicTask, null=True, blank=True, on_delete=models.SET_NULL
     )
 
+    def __str__(self) -> str:
+        return f"Busca - {self.pk}"
+
     class Meta:
         verbose_name = "Configuração de Busca"
         verbose_name_plural = "Configurações de Buscas"
-
-
-class SearchRequest(models.Model):
-    response_time = models.IntegerField(
-        verbose_name="Tempo da resposta",
-        blank=False,
-    )
-    response_status = models.IntegerField(
-        verbose_name="Status da resposta",
-        blank=False,
-    )
-    search = models.ForeignKey(Search, on_delete=models.CASCADE)
-
-    class Meta:
-        verbose_name = "Resposta da Busca"
-        verbose_name_plural = "Respostas das Buscas"
 
 
 class StockPrice(BaseSuperModel):
@@ -108,6 +100,11 @@ class StockPrice(BaseSuperModel):
         related_name="prices",
         verbose_name="Configuração de Busca",
         on_delete=models.CASCADE,
+    )
+    price = models.DecimalField(
+        verbose_name="Preço do Ativo",
+        max_digits=6,
+        decimal_places=2,
     )
 
     class Meta:
