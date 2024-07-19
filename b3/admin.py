@@ -1,7 +1,6 @@
 from django.contrib import admin
 
-from b3.models import Stock, StockPrice, Search
-
+from b3.models import Search, Stock, StockPrice
 
 
 @admin.register(Stock)

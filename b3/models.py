@@ -45,17 +45,17 @@ class Stock(BaseSuperModel):
     class Meta:
         verbose_name = "Ativo"
         verbose_name_plural = "Ativos"
-    
+
 
 class Search(BaseSuperModel):
     SUPERIOR = "SUPERIOR"
     NEGOCIOS = "NEGOCIOS"
-    INFERIOR = "INFERIOR" 
+    INFERIOR = "INFERIOR"
 
     PRICE_TUNNEL_CHOICES = {
         SUPERIOR: "SUPERIOR",
         NEGOCIOS: "NEGOCIOS",
-        INFERIOR: "INFERIOR", 
+        INFERIOR: "INFERIOR",
     }
     price_tunnel = models.CharField(
         verbose_name="Túnel de Preço",
@@ -65,10 +65,7 @@ class Search(BaseSuperModel):
     )
 
     stocks = models.ManyToManyField(
-        Stock,
-        blank=True,
-        related_name="buscas",
-        verbose_name="Ativos Monitorados"
+        Stock, blank=True, related_name="buscas", verbose_name="Ativos Monitorados"
     )
 
     interval = models.IntegerField(

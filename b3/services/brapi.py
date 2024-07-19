@@ -1,6 +1,7 @@
-import requests
-import logging
 import json
+import logging
+
+import requests
 
 from b3.models import Search, StockPrice
 
@@ -33,6 +34,8 @@ class BRAPIService:
 
         stock_results = []
         for stock in search.stocks.all():
+            # Aqui poderia fazer uma unica request e buscar todos os ativos de uma vez
+            # Por limitação do plano free da API, só é possível buscar um ativo
             try:
                 response = requests.get(
                     self.quote_url + stock.code,

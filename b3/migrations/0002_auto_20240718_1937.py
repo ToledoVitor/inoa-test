@@ -5,17 +5,17 @@ from django.db import migrations
 
 def create_stocks(apps, schema_editor):
     """
-    Data migration: 
+    Data migration:
     Lê os ativos disponíveis listados no txt e cria automaticamente no banco
 
-    Evita que o usuário precise criar os dados no banco, e que sejam criados 
-    ativos que não estão disponíveis na API.  
+    Evita que o usuário precise criar os dados no banco, e que sejam criados
+    ativos que não estão disponíveis na API.
     """
-    
+
     Stock = apps.get_model("b3", "Stock")
 
     bulk_objs = []
-    with open("avaliable-stocks.txt",'r') as stocks_file:
+    with open("avaliable-stocks.txt", "r") as stocks_file:
         for line in stocks_file:
             stocks = line.split(",")
 
@@ -23,6 +23,7 @@ def create_stocks(apps, schema_editor):
                 bulk_objs.append(Stock(code=stock))
 
     _ = Stock.objects.bulk_create(bulk_objs, batch_size=100)
+
 
 class Migration(migrations.Migration):
 
@@ -33,4 +34,3 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunPython(create_stocks),
     ]
-

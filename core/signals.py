@@ -15,4 +15,3 @@
 
 # def call_crawler_task(config: SearchConfig):
 #     B3StockCrawler.handle(config)
-
