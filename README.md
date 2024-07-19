@@ -73,7 +73,7 @@
   A API escolhida foi a da [brapi](https://brapi.dev/docs/acoes/available), que foi a que
   ofereceu a maior quantidade de informações, e possui a opção de plano gratuito.
 
-  > [!AVISO]
+  > [!NOTE]
   > Para usarmos a api precisamos de um token, para que não seja necessário o usuário crie um, deixei salvo o meu token de teste. Em breve irei remove-lo.
 
   Ainda sim, existem algumas limitações pela utilização do plano gratuito. Como por exemplo:
