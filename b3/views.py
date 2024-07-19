@@ -1,12 +1,14 @@
 import json
 
 from django.db import transaction
+from django.shortcuts import get_object_or_404
 from django_celery_beat.models import IntervalSchedule, PeriodicTask
 from rest_framework import viewsets
 from rest_framework.exceptions import APIException
+from rest_framework.response import Response
 
-from b3.models import Search
-from b3.serializers import Searcherializer
+from b3.models import Search, StockPrice
+from b3.serializers import Searcherializer, StockPriceSerializer
 
 
 class SearchViewSet(viewsets.ModelViewSet):
@@ -43,3 +45,16 @@ class SearchViewSet(viewsets.ModelViewSet):
         if instance.task is not None:
             instance.task.delete()
         return super().perform_destroy(instance)
+
+
+class StockPriceViewset(viewsets.ViewSet):
+    def list(self, request):
+        queryset = StockPrice.objects.all()
+        serializer = StockPriceSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        queryset = StockPrice.objects.all()
+        user = get_object_or_404(queryset, pk=pk)
+        serializer = StockPriceSerializer(user)
+        return Response(serializer.data)
